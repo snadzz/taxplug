@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IRP5 Codes | Tax Matters</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .codes-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    .search-section {
+      margin-bottom: 2rem;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 0.875rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .search-box button {
+      padding: 0.875rem 1.5rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .search-box button:hover {
+      background: var(--primary-dark);
+    }
+
+    .search-box .btn.secondary {
+      background: var(--text-light);
+    }
+
+    .search-box .btn.secondary:hover {
+      background: #999;
+    }
+
+    .codes-table-wrapper {
+      overflow-x: auto;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .codes-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+    }
+
+    .codes-table thead {
+      background: var(--primary);
+      color: white;
+    }
+
+    .codes-table th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .codes-table td {
+      padding: 0.875rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .codes-table tbody tr:hover {
+      background: #f9fafb;
+    }
+
+    .codes-table tr.highlight {
+      background: #fffbea;
+    }
+
+    .code-col {
+      font-weight: 600;
+      color: var(--primary);
+      min-width: 80px;
+    }
+
+    .description-col {
+      color: var(--text);
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-light);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-light);
+    }
+
+    .stats {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--bg);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+
+    .codes-container h2 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .codes-container > p {
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <h1>Tax Matters</h1>
+      <div class="header-actions">
+        <span id="user-email"></span>
+        <button id="logout-btn" class="btn secondary">Logout</button>
+      </div>
+    </header>
+
+    <div id="main-menu" class="tabs mini-tabs" role="navigation" aria-label="App menu">
+      <button type="button" class="tab" id="back-chat-btn">Chat</button>
+      <button type="button" class="tab" id="back-overtime-btn">Overtime Calculator</button>
+      <button type="button" class="tab" id="open-needs-btn">Needs Analysis</button>
+      <button type="button" class="tab" id="open-contact-btn">Contact Us</button>
+      <button type="button" class="tab active">IRP5 Codes</button>
+    </div>
+
+    <main class="chat-main">
+      <section class="codes-container">
+        <h2>SARS IRP5 Form Codes Reference</h2>
+        <p>Search for IRP5 form codes and their descriptions from the PAYE-AE-06 guide.</p>
+
+        <div class="search-section">
+          <div class="search-box">
+            <input
+              id="search-input"
+              type="text"
+              placeholder="Search by code or description..."
+              autocomplete="off"
+            >
+            <select id="search-mode" aria-label="Search mode" title="Search mode" style="padding:0.6rem;border-radius:8px;border:1px solid var(--border);">
+              <option value="both">Both</option>
+              <option value="code">Code only</option>
+              <option value="description">Description only</option>
+            </select>
+            <button id="search-btn" type="button">Search</button>
+            <button id="clear-btn" type="button" class="btn secondary">Clear</button>
+          </div>
+          <div class="stats">
+            <span id="results-count">Loading codes...</span>
+          </div>
+        </div>
+
+        <div class="codes-table-wrapper">
+          <table class="codes-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody id="codes-tbody">
+              <tr>
+                <td colspan="2" class="loading">Loading codes...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="analytics.js"></script>
+  <script src="irp5-codes.js"></script>
+</body>
+</html>

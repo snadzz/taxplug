@@ -1,0 +1,517 @@
+{
+  "NormalIncomeCodes": [
+    {
+      "code": "3601",
+      "description": "Income (Subject to PAYE)",
+      "explanation": "Amounts paid or payable to an employee for services rendered, excluding Long Service Cash Awards. Examples: salary/wages, backdated salary/pension, remuneration to migrant/seasonal workers, etc."
+    },
+    {
+      "code": "3651",
+      "description": "Income (Subject to PAYE)",
+      "explanation": "Amounts paid or payable to an employee for services rendered, excluding Long Service Cash Awards. Examples: salary/wages, backdated salary/pension, remuneration to migrant/seasonal workers, etc."
+    },
+    {
+      "code": "3602",
+      "description": "Income (Non-taxable)",
+      "explanation": "Non-taxable income excluding Foreign Service remuneration for RSA residents that are exempt. Examples: war pensions, non-taxable portion of arbitration awards, capital element of annuities."
+    },
+    {
+      "code": "3652",
+      "description": "Income (Non-taxable)",
+      "explanation": "Non-taxable income excluding Foreign Service remuneration for RSA residents that are exempt. Examples: war pensions, non-taxable portion of arbitration awards, capital element of annuities."
+    },
+    {
+      "code": "3603",
+      "description": "Pension (Subject to PAYE)",
+      "explanation": "Compulsory pension or qualifying purchased annuity paid on a regular basis, including backdated payments. Includes taxable disability benefits."
+    },
+    {
+      "code": "3653",
+      "description": "Pension (Subject to PAYE)",
+      "explanation": "Compulsory pension or qualifying purchased annuity paid on a regular basis, including backdated payments. Includes taxable disability benefits."
+    },
+    {
+      "code": "3604",
+      "description": "Pension (Non-taxable)",
+      "explanation": "Non-taxable pensions paid on a regular basis (e.g., war pensions). Incorporated into 3602/3652 from 2010 onwards."
+    },
+    {
+      "code": "3654",
+      "description": "Pension (Non-taxable)",
+      "explanation": "Non-taxable pensions paid on a regular basis (e.g., war pensions). Incorporated into 3602/3652 from 2010 onwards."
+    },
+    {
+      "code": "3605",
+      "description": "Annual payment (Subject to PAYE)",
+      "explanation": "Annual bonus, incentive bonus, leave pay, merit awards, retention bonuses, etc."
+    },
+    {
+      "code": "3655",
+      "description": "Annual payment (Subject to PAYE)",
+      "explanation": "Annual bonus, incentive bonus, leave pay, merit awards, retention bonuses, etc."
+    },
+    {
+      "code": "3606",
+      "description": "Commission (Subject to PAYE)",
+      "explanation": "Commission amounts paid or payable to an employee."
+    },
+    {
+      "code": "3656",
+      "description": "Commission (Subject to PAYE)",
+      "explanation": "Commission amounts paid or payable to an employee."
+    },
+    {
+      "code": "3607",
+      "description": "Overtime (Subject to PAYE)",
+      "explanation": "Amounts paid as overtime for services rendered. Taxed as normal income."
+    },
+    {
+      "code": "3657",
+      "description": "Overtime (Subject to PAYE)",
+      "explanation": "Amounts paid as overtime for services rendered. Taxed as normal income."
+    },
+    {
+      "code": "3608",
+      "description": "Arbitration award (Subject to PAYE)",
+      "explanation": "Taxable portion of settlement agreements or court-ordered awards relating to labour disputes."
+    },
+    {
+      "code": "3658",
+      "description": "Arbitration award (Subject to PAYE)",
+      "explanation": "Taxable portion of settlement agreements or court-ordered awards relating to labour disputes."
+    },
+    {
+      "code": "3609",
+      "description": "Arbitration award (Non-taxable)",
+      "explanation": "Non-taxable portion of settlement agreements or court-ordered awards relating to labour disputes."
+    },
+    {
+      "code": "3659",
+      "description": "Arbitration award (Non-taxable)",
+      "explanation": "Non-taxable portion of settlement agreements or court-ordered awards relating to labour disputes."
+    },
+    {
+      "code": "3610",
+      "description": "Annuity from a RAF (Subject to PAYE)",
+      "explanation": "Annuity paid regularly by a retirement annuity fund or compulsory purchased annuity."
+    },
+    {
+      "code": "3660",
+      "description": "Annuity from a RAF (Subject to PAYE)",
+      "explanation": "Annuity paid regularly by a retirement annuity fund or compulsory purchased annuity."
+    },
+    {
+      "code": "3611",
+      "description": "Purchased annuity (Subject to PAYE)",
+      "explanation": "Taxable portion of a purchased annuity paid by a long-term insurer (not from a retirement fund)."
+    },
+    {
+      "code": "3661",
+      "description": "Purchased annuity (Subject to PAYE)",
+      "explanation": "Taxable portion of a purchased annuity paid by a long-term insurer (not from a retirement fund)."
+    },
+    {
+      "code": "3612",
+      "description": "Purchased annuity (Non-taxable)",
+      "explanation": "Non-taxable portion (capital interest) of a purchased annuity."
+    },
+    {
+      "code": "3662",
+      "description": "Purchased annuity (Non-taxable)",
+      "explanation": "Non-taxable portion (capital interest) of a purchased annuity."
+    },
+    {
+      "code": "3613",
+      "description": "Restraint of trade (Subject to PAYE)",
+      "explanation": "Restraint of trade payments made by virtue of employment or office held."
+    },
+    {
+      "code": "3663",
+      "description": "Restraint of trade (Subject to PAYE)",
+      "explanation": "Restraint of trade payments made by virtue of employment or office held."
+    },
+    {
+      "code": "3614",
+      "description": "Other retirement lump sums (Subject to PAYE)",
+      "explanation": "Retirement lump sums paid by a fund."
+    },
+    {
+      "code": "3664",
+      "description": "Other retirement lump sums (Subject to PAYE)",
+      "explanation": "Retirement lump sums paid by a fund."
+    },
+    {
+      "code": "3615",
+      "description": "Director's remuneration (Subject to PAYE)",
+      "explanation": "Income paid to directors of private companies or close corporations."
+    },
+    {
+      "code": "3665",
+      "description": "Director's remuneration (Subject to PAYE)",
+      "explanation": "Income paid to directors of private companies or close corporations."
+    },
+    {
+      "code": "3616",
+      "description": "Independent contractors (Subject to PAYE)",
+      "explanation": "Remuneration paid to independent contractors."
+    },
+    {
+      "code": "3666",
+      "description": "Independent contractors (Subject to PAYE)",
+      "explanation": "Remuneration paid to independent contractors."
+    },
+    {
+      "code": "3617",
+      "description": "Labour Brokers (PAYE)",
+      "explanation": "Remuneration paid to labour brokers without exemption certificates."
+    },
+    {
+      "code": "3667",
+      "description": "Labour Brokers (PAYE)",
+      "explanation": "Remuneration paid to labour brokers without exemption certificates."
+    },
+    {
+      "code": "3618",
+      "description": "Annuity from Provident / Provident Preservation Fund (PAYE)",
+      "explanation": "Qualifying annuities paid regularly from provident or provident preservation funds."
+    },
+    {
+      "code": "3668",
+      "description": "Annuity from Provident / Provident Preservation Fund (PAYE)",
+      "explanation": "Qualifying annuities paid regularly from provident or provident preservation funds."
+    },
+    {
+      "code": "3619",
+      "description": "Labour Brokers (IT)",
+      "explanation": "Amounts paid to labour brokers with exemption certificates."
+    },
+    {
+      "code": "3669",
+      "description": "Labour Brokers (IT)",
+      "explanation": "Amounts paid to labour brokers with exemption certificates."
+    },
+    {
+      "code": "3620",
+      "description": "NED Directors Fees / Audit Committee Members Fees - RSA Resident (IT)",
+      "explanation": "Fees received by RSA Non-Executive Directors or Audit Committee Members."
+    },
+    {
+      "code": "3670",
+      "description": "NED Directors Fees / Audit Committee Members Fees - RSA Resident (IT)",
+      "explanation": "Fees received by RSA Non-Executive Directors or Audit Committee Members."
+    },
+    {
+      "code”:”3621”
+      “description”:”Directors Fees – Non- Resident NED (PAYE) “
+      “explanation”:”Directors’ remuneration received from an RSA source by a Non-Resident Non-Executive Director “
+},
+{
+“code”:”3622”
+“description”:”Long Service Cash Award ”
+“explanation”:”A Long Service Award is given to an employee that complies with the initial 15 years and any subsequent 10 years unbroken period of service requirement – par (vii) of the proviso under par (c) of “gross income” in section 1 of the Income Tax Act. ”
+},
+{
+“code”:”3672 “
+“description”:”Long Service Cash Award ”
+“explanation”:”A Long Service Award is given to an employee that complies with the initial 15 years and any subsequent 10 years unbroken period of service requirement – par (vii) of the proviso under par (c) of “gross income” in section 1 of the Income Tax Act. ”
+},
+{
+“code”:”3623”
+“description”:”Antedated salary / pension’ extending over previous years of assessment (PAYE) ”
+“explanation”:”Employees’ tax (Taxable) accrued in previous year(s) due to a settlement agreement or arbitration award or court-order that relates to previous years. ”
+},
+{
+  "AllowanceCodes": [
+    {
+      "code": "3701",
+      "description": "Travel allowance (Subject to PAYE)",
+      "explanation": "Allowance or advance paid to an employee in respect of travelling expenses for business purposes - including fixed travel allowances, petrol-, garage- and maintenance cards. 100% of the value paid must be specified."
+    },
+    {
+      "code": "3751",
+      "description": "Travel allowance (Subject to PAYE)",
+      "explanation": "Allowance or advance paid to an employee in respect of travelling expenses for business purposes - including fixed travel allowances, petrol-, garage- and maintenance cards. 100% of the value paid must be specified."
+    },
+    {
+      "code": "3702",
+      "description": "Reimbursive travel allowance (IT)",
+      "explanation": "Applicable where reimbursement rate exceeds prescribed rate or employee receives other compensation for travel. Only the portion not exceeding prescribed rate is reflected here."
+    },
+    {
+      "code": "3752",
+      "description": "Reimbursive travel allowance (IT)",
+      "explanation": "Applicable where reimbursement rate exceeds prescribed rate or employee receives other compensation for travel. Only the portion not exceeding prescribed rate is reflected here."
+    },
+    {
+      "code": "3703",
+      "description": "Reimbursive travel allowance (Non-taxable)",
+      "explanation": "Applicable where reimbursement rate does not exceed prescribed rate and employee receives no other compensation for travel. Full value of reimbursement is non-taxable."
+    },
+    {
+      "code": "3753",
+      "description": "Reimbursive travel allowance (Non-taxable)",
+      "explanation": "Applicable where reimbursement rate does not exceed prescribed rate and employee receives no other compensation for travel. Full value of reimbursement is non-taxable."
+    }
+ {
+      "code": "3704",
+      "description": "Other travel allowance",
+      "explanation": "Other travel-related allowances as specified."
+    },
+    {
+      "code": "3754",
+      "description": "Other travel allowance",
+      "explanation": "Other travel-related allowances as specified."
+    },
+    {
+      "code": "3707",
+      "description": "Subsistence allowance",
+      "explanation": "Allowance paid to cover subsistence expenses."
+    },
+    {
+      "code": "3757",
+      "description": "Subsistence allowance",
+      "explanation": "Allowance paid to cover subsistence expenses."
+    },
+    {
+      "code": "3708",
+      "description": "Entertainment allowance",
+      "explanation": "Allowance paid for entertainment expenses."
+    },
+    {
+      "code": "3758",
+      "description": "Entertainment allowance",
+      "explanation": "Allowance paid for entertainment expenses."
+    },
+    {
+      "code": "3713",
+      "description": "Other allowances",
+      "explanation": "Codes 3706/3756, 3710/3760, 3711/3761 and 3712/3762 must be incorporated here."
+    },
+    {
+      "code": "3763",
+      "description": "Other allowances",
+      "explanation": "Codes 3706/3756, 3710/3760, 3711/3761 and 3712/3762 must be incorporated here."
+    },
+    {
+      "code": "3714",
+      "description": "Other allowances",
+      "explanation": "Codes 3705/3755, 3709/3759 and 3716/3766 must be incorporated here."
+    },
+    {
+      "code": "3764",
+      "description": "Other allowances",
+      "explanation": "Codes 3705/3755, 3709/3759 and 3716/3766 must be incorporated here."
+    },
+    {
+      "code": "3715",
+      "description": "Other allowance",
+      "explanation": "Other allowance amounts."
+    },
+    {
+      "code": "3765",
+      "description": "Other allowance",
+      "explanation": "Other allowance amounts."
+    },
+    {
+      "code": "3717",
+      "description": "Other allowance",
+      "explanation": "Other allowance amounts."
+    },
+    {
+      "code": "3767",
+      "description": "Other allowance",
+      "explanation": "Other allowance amounts."
+    },
+    {
+      "code": "3718",
+      "description": "Other allowance",
+      "explanation": "Other allowance amounts."
+    },
+    {
+      "code": "3768",
+      "description": "Other allowance",
+      "explanation": "Other allowance amounts."
+    },
+    {
+      "code": "3719",
+      "description": "Other allowance",
+      "explanation": "Applicable from 2018 year of assessment."
+    },
+    {
+      "code": "3769",
+      "description": "Other allowance",
+      "explanation": "Applicable from 2018 year of assessment."
+    },
+    {
+      "code": "3720",
+      "description": "Other allowance",
+      "explanation": "Applicable from 2018 year of assessment."
+    },
+    {
+      "code": "3770",
+      "description": "Other allowance",
+      "explanation": "Applicable from 2018 year of assessment."
+    },
+    {
+      "code": "3721",
+      "description": "Other allowance",
+      "explanation": "Applicable from 2018 year of assessment."
+    },
+    {
+      "code": "3771",
+      "description": "Other allowance",
+      "explanation": "Applicable from 2018 year of assessment."
+    },
+    {
+      "code": "3722",
+      "description": "Other allowance",
+      "explanation": "Applicable from 2019 year of assessment."
+    },
+    {
+      "code": "3772",
+      "description": "Other allowance",
+      "explanation": "Applicable from 2019 year of assessment."
+    },
+    {
+      "code": "3723",
+      "description": "Other allowance",
+      "explanation": "Applicable from 2018 year of assessment."
+    },
+    {
+      "code": "3773",
+      "description": "Other allowance",
+      "explanation": "Applicable from 2018 year of assessment."
+    },
+    {
+      "code": "3724",
+      "description": "Other allowance",
+      "explanation": "Only applicable for the 2021 year of assessment."
+    }
+  ],
+
+  ],
+  "FringeBenefitCodes": [
+    {
+      "code": "3801",
+      "description": "Fringe benefits",
+      "explanation": "General fringe benefits including assets, services, and other incorporated codes."
+    },
+    {
+      "code": "3851",
+      "description": "Fringe benefits",
+      "explanation": "General fringe benefits including assets, services, and other incorporated codes."
+    },
+    {
+      "code": "3802",
+      "description": "Fringe benefits",
+      "explanation": "Other specific fringe benefit amounts."
+    },
+    {
+      "code": "3852",
+      "description": "Fringe benefits",
+      "explanation": "Other specific fringe benefit amounts."
+    }
+{
+      "code": "3805",
+      "description": "Fringe benefits",
+      "explanation": "Only applicable from the 2013 year of assessment."
+    },
+    {
+      "code": "3855",
+      "description": "Fringe benefits",
+      "explanation": "Only applicable from the 2013 year of assessment."
+    },
+    {
+      "code": "3806",
+      "description": "Fringe benefits",
+      "explanation": "Only applicable from the 2013 year of assessment."
+    },
+    {
+      "code": "3856",
+      "description": "Fringe benefits",
+      "explanation": "Only applicable from the 2013 year of assessment."
+    },
+    {
+      "code": "3808",
+      "description": "Fringe benefits",
+      "explanation": "Only applicable from the 2013 year of assessment."
+    },
+    {
+      "code": "3858",
+      "description": "Fringe benefits",
+      "explanation": "Only applicable from the 2013 year of assessment."
+    },
+    {
+      "code": "3809",
+      "description": "Fringe benefits",
+      "explanation": "Only applicable from the 2013 year of assessment."
+    },
+    {
+      "code": "3859",
+      "description": "Fringe benefits",
+      "explanation": "Only applicable from the 2013 year of assessment."
+    },
+    {
+      "code": "3810",
+      "description": "Fringe benefits",
+      "explanation": "Other fringe benefit amounts."
+    },
+    {
+      "code": "3860",
+      "description": "Fringe benefits",
+      "explanation": "Other fringe benefit amounts."
+    },
+    {
+      "code": "3813",
+      "description": "Fringe benefits",
+      "explanation": "Other fringe benefit amounts."
+    },
+  ],
+  "LumpSumCodes": [
+    {
+      "code": "3901",
+      "description": "Lump sum payments",
+      "explanation": "General lump sum amounts paid to employees."
+    },
+    {
+      "code": "3951",
+      "description": "Lump sum payments",
+      "explanation": "General lump sum amounts paid to employees."
+    },
+    {
+      "code": "3906",
+      "description": "Lump sum payments",
+      "explanation": "Other lump sum amounts applicable."
+    },
+    {
+      "code": "3956",
+      "description": "Lump sum payments",
+      "explanation": "Other lump sum amounts applicable."
+    }
+    // … continue duplicating for 3907/3957 through 3926
+  ],
+  "GrossRemunerationCodes": [
+    {
+      "code": "3696",
+      "description": "Gross remuneration",
+      "explanation": "Aggregate of taxable remuneration amounts."
+    },
+    {
+      "code": "3697",
+      "description": "Gross remuneration",
+      "explanation": "Aggregate of taxable remuneration amounts."
+    },
+    {
+      "code": "3698",
+      "description": "Gross remuneration",
+      "explanation": "Aggregate of taxable remuneration amounts."
+    },
+    {
+      "code": "3699",
+      "description": "Gross remuneration",
+      "explanation": "Aggregate of taxable remuneration amounts."
+    }
+  ]
+}
+
+

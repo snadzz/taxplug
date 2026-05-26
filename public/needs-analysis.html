@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Needs Analysis | Tax Matters</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .needs-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    .section-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 0.9rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .form-group select {
+      appearance: none;
+    }
+
+    .step-navigation {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .step-title {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+    }
+
+    .option-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .option-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      min-width: 160px;
+      cursor: pointer;
+      background: var(--bg);
+      transition: border-color 0.2s, background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .option-card.active {
+      border-color: var(--primary);
+      background: rgba(0, 119, 73, 0.08);
+    }
+
+    .option-card input {
+      accent-color: var(--primary);
+    }
+
+    .summary-card {
+      padding: 1.5rem;
+      background: #f7fdf5;
+      border: 1px solid #d6efd4;
+      border-radius: 12px;
+    }
+
+    .summary-card h3 {
+      margin-top: 0;
+      color: var(--primary);
+    }
+
+    .summary-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .summary-list li {
+      margin-bottom: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <h1>Tax Matters</h1>
+      <div class="header-actions">
+        <span id="user-email"></span>
+        <button id="logout-btn" class="btn secondary">Logout</button>
+      </div>
+    </header>
+
+    <div id="main-menu" class="tabs mini-tabs" role="navigation" aria-label="App menu">
+      <button type="button" class="tab" id="open-chat-btn">Chat</button>
+      <button type="button" class="tab" id="open-overtime-btn">Overtime Calculator</button>
+      <button type="button" class="tab" id="irp5-btn">IRP5 Codes</button>
+      <button type="button" class="tab" id="open-contact-btn">Contact Us</button>
+      <button type="button" class="tab active">Needs Analysis</button>
+    </div>
+
+    <main class="chat-main">
+      <section class="needs-container">
+        <div class="section-card" id="step-1-card">
+          <h2 class="step-title">Step 1: Select your financial goal</h2>
+          <p>Choose the category that best describes your primary financial journey.</p>
+
+          <div class="option-group" id="goal-options">
+            <label class="option-card" data-goal="investment">
+              <input type="radio" name="financialGoal" value="investment">
+              <span>Investment</span>
+            </label>
+            <label class="option-card" data-goal="retirement">
+              <input type="radio" name="financialGoal" value="retirement">
+              <span>Retirement</span>
+            </label>
+            <label class="option-card" data-goal="insurance">
+              <input type="radio" name="financialGoal" value="insurance">
+              <span>Insurance</span>
+            </label>
+            <label class="option-card" data-goal="financial-health">
+              <input type="radio" name="financialGoal" value="financial-health">
+              <span>Financial Health</span>
+            </label>
+          </div>
+
+          <div class="section-card" id="goal-detail-card" style="display:none; margin-top:1.5rem;">
+            <h3 class="step-title">Step 1a: Choose a specific objective</h3>
+            <div class="option-group" id="goal-detail-options"></div>
+          </div>
+
+          <div class="step-navigation">
+            <button id="next-step-btn" class="btn primary" type="button">Next</button>
+            <span id="goal-help" class="text-muted" style="align-self:center;">Pick a goal, then choose a sub-option.</span>
+          </div>
+        </div>
+
+        <div class="section-card" id="step-2-card" style="display:none;">
+          <h2 class="step-title">Step 2: Personal finances</h2>
+          <p>Enter your income, expenses, travelling costs, dependents and daily living costs so we can understand your cash flow.</p>
+
+          <div class="form-grid">
+            <div class="section-card">
+              <h3 class="step-title">Income</h3>
+              <div class="form-group">
+                <label for="gross-salary">Gross salary</label>
+                <input id="gross-salary" type="number" min="0" step="0.01" placeholder="e.g. 30000">
+              </div>
+              <div class="form-group">
+                <label for="net-salary">Net salary</label>
+                <input id="net-salary" type="number" min="0" step="0.01" placeholder="e.g. 24000">
+              </div>
+              <div class="form-group">
+                <label for="rental-income">Rental income</label>
+                <input id="rental-income" type="number" min="0" step="0.01" placeholder="e.g. 5000">
+              </div>
+              <div class="form-group">
+                <label for="interest-dividends">Interest / Dividends</label>
+                <input id="interest-dividends" type="number" min="0" step="0.01" placeholder="e.g. 1500">
+              </div>
+              <div class="form-group">
+                <label for="supplemental-income">Supplemental income stream</label>
+                <input id="supplemental-income" type="number" min="0" step="0.01" placeholder="e.g. 2000">
+              </div>
+               <div class="section-card" style="margin-top:1rem;">
+            <h3 class="step-title">Income Summary</h3>
+            
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:0.5rem;">
+              <div><strong>Total Income</strong></div>
+              <div id="total-income" class="stats-value">0.00</div>
+            </div>
+          </div>
+            </div>
+
+            <div class="section-card">
+              <h3 class="step-title">Expenses</h3>
+              <div class="form-group">
+                <label for="bond">Bond</label>
+                <input id="bond" type="number" min="0" step="0.01" placeholder="e.g. 8000">
+              </div>
+              <div class="form-group">
+                <label for="rates">Rates</label>
+                <input id="rates" type="number" min="0" step="0.01" placeholder="e.g. 1800">
+              </div>
+              <div class="form-group">
+                <label for="electricity">Electricity</label>
+                <input id="electricity" type="number" min="0" step="0.01" placeholder="e.g. 1200">
+              </div>
+              <div class="form-group">
+                <label for="home-insurance">Home insurance</label>
+                <input id="home-insurance" type="number" min="0" step="0.01" placeholder="e.g. 600">
+              </div>
+              <div class ="form-group">
+                <label for = "Loan repayments">Loan repayments</label>
+                <input id="loan-repayments" type="number" min="0" step="0.01" placeholder="e.g. 2500">  
+                </div>
+                <div class="form-group">
+                <label for="Credit Card">Credit Card</label>
+                <input id="credit-card" type="number" min="0" step="0.01" placeholder="e.g. 1000">
+                </div>
+            </div>
+          </div>
+
+         
+
+          <div class="form-grid">
+            <div class="section-card">
+              <h3 class="step-title">Travelling</h3>
+              <div class="form-group">
+                <label for="car-repayment">Car repayment</label>
+                <input id="car-repayment" type="number" min="0" step="0.01" placeholder="e.g. 4000">
+              </div>
+              <div class="form-group">
+                <label for="car-insurance">Car insurance</label>
+                <input id="car-insurance" type="number" min="0" step="0.01" placeholder="e.g. 900">
+              </div>
+              <div class="form-group">
+                <label for="monthly-petrol">Monthly petrol</label>
+                <input id="monthly-petrol" type="number" min="0" step="0.01" placeholder="e.g. 2500">
+              </div>
+            </div>
+
+            <div class="section-card">
+              <h3 class="step-title">Dependents</h3>
+              <div class="form-group">
+                <label for="child-maintenance">Child maintenance</label>
+                <input id="child-maintenance" type="number" min="0" step="0.01" placeholder="e.g. 2000">
+              </div>
+              <div class="form-group">
+                <label for="school-fees">School fees</label>
+                <input id="school-fees" type="number" min="0" step="0.01" placeholder="e.g. 3000">
+              </div>
+              <div class="form-group">
+                <label for="extra-mural">Extra mural</label>
+                <input id="extra-mural" type="number" min="0" step="0.01" placeholder="e.g. 800">
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <h3 class="step-title">Daily living</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="groceries">Groceries</label>
+                <input id="groceries" type="number" min="0" step="0.01" placeholder="e.g. 3000">
+              </div>
+              <div class="form-group">
+                <label for="clothing-account">Clothing account</label>
+                <input id="clothing-account" type="number" min="0" step="0.01" placeholder="e.g. 800">
+              </div>
+              <div class="form-group">
+                <label for="cellphone-contract">Cellphone contract</label>
+                <input id="cellphone-contract" type="number" min="0" step="0.01" placeholder="e.g. 500">
+              </div>
+              <div class="form-group">
+                <label for="entertainment">Entertainment</label>
+                <input id="entertainment" type="number" min="0" step="0.01" placeholder="e.g. 1000">
+              </div>
+              <div class="form-group">
+                <label for="health-club">Health club</label>
+                <input id="health-club" type="number" min="0" step="0.01" placeholder="e.g. 600">
+              </div>
+            </div>
+          </div>
+
+          <div class="step-navigation">
+            <button id="previous-step-btn" class="btn secondary" type="button">Previous</button>
+            <button id="submit-analysis-btn" class="btn primary" type="button">Save & Review</button>
+          </div>
+
+          <div class="section-card" style="margin-top:1rem;">
+            <h3 class="step-title">Discretionary Income</h3>
+            <p class="admin-notice">Total income minus total expenses.</p>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:0.5rem;">
+              <div><strong>Discretionary Income</strong></div>
+              <div id="discretionary-income" class="stats-value">0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="analysis-summary" class="summary-card" style="display:none;">
+          <h3>Needs Analysis Summary</h3>
+          <ul class="summary-list" id="summary-list"></ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="analytics.js"></script>
+  <script src="needs-analysis.js"></script>
+</body>
+</html>

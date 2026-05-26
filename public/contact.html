@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | Tax Matters</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .contact-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+    }
+
+    .contact-card {
+      background: var(--card);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 1.75rem;
+    }
+
+    .contact-card h2 {
+      margin-bottom: 0.75rem;
+      color: var(--primary);
+    }
+
+    .contact-card p {
+      margin-bottom: 1rem;
+      color: var(--text-light);
+    }
+
+    .contact-form {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .contact-form label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .contact-form input,
+    .contact-form select,
+    .contact-form textarea {
+      padding: 0.95rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      resize: vertical;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .contact-actions {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .success-message {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      background: #f0fdf4;
+      border: 1px solid #b7ebc6;
+      color: #0f5132;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <h1>Contact Us</h1>
+      <div class="header-actions">
+        <span id="user-email"></span>
+        <button id="logout-btn" class="btn secondary">Logout</button>
+      </div>
+    </header>
+
+    <div id="main-menu" class="tabs mini-tabs" role="navigation" aria-label="App menu">
+      <button type="button" class="tab" id="open-chat-btn">Chat</button>
+      <button type="button" class="tab" id="open-overtime-btn">Overtime Calculator</button>
+      <button type="button" class="tab" id="irp5-btn">IRP5 Codes</button>
+      <button type="button" class="tab" id="open-needs-btn">Needs Analysis</button>
+      <button type="button" class="tab active">Contact Us</button>
+    </div>
+
+    <main class="chat-main">
+      <section class="contact-container">
+        <div class="contact-card">
+          <h2>Get in touch</h2>
+          <p>Select the reason for your message and tell us what you need. We'll respond quickly if you ask us to get back to you.</p>
+
+          <form id="contact-form" class="contact-form">
+            <label>
+              I want to submit a
+              <select id="contact-type" required>
+                <option value="">Select an option</option>
+                <option value="Complaint">Complaint</option>
+                <option value="Compliment">Compliment</option>
+                <option value="Suggestion">Suggestion</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </label>
+
+            <label>
+              Your message
+              <textarea id="contact-message" rows="8" placeholder="Please type your message here..." required></textarea>
+            </label>
+
+            <label class="checkbox-row">
+              <input id="contact-followup" type="checkbox">
+              <span>Please get back at me</span>
+            </label>
+
+            <div class="contact-actions">
+              <button type="submit" class="btn primary">Send message</button>
+              <button id="contact-clear-btn" type="button" class="btn secondary">Clear</button>
+            </div>
+          </form>
+
+          <div id="contact-success" class="success-message" style="display:none;">
+            Thank you! Your message has been received. We will respond if follow-up was requested.
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="analytics.js"></script>
+  <script src="contact.js"></script>
+</body>
+</html>

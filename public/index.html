@@ -1,0 +1,158 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Matters</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #intro {
+      max-width: 900px;
+      margin: 1.5rem auto;
+      padding: 1.75rem 1.5rem;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    #intro p {
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    #intro p:last-child {
+      margin-bottom: 0;
+    }
+
+    #intro p:first-child {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+<div id="intro">
+
+<p>Welcome to Tax Matters! your personal assistant in some financial matters.</p>
+<p>Tax Matters is an AI-powered tool designed to help you navigate the complexities of South African tax law.</p>
+<p>To get started, please login or register for an account. Once you're logged in, you can ask questions about South African tax, use the overtime calculator, view IRP5 codes, and more.</p>
+<p> We are always working to add more features! so feel free to drop us a suggestions in the contact page</p>
+<p> The Key to financial prosperity begins with a good Financial analysis, Take the first step with our financial analysis tool</p>
+
+</div>
+
+  <div id="app">
+    <!-- Auth Section -->
+    <div id="auth-section" class="auth-container">
+      <div class="auth-card">
+        <h1>Tax Matters</h1>
+        <p class="subtitle">We're here to help with your Tax Matters</p>
+        
+        <div id="auth-tabs" class="tabs">
+          <button class="tab active" data-tab="login">Login</button>
+          <button class="tab" data-tab="register">Register</button>
+        </div>
+        
+        <form id="login-form" class="auth-form">
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <button type="submit" class="btn primary">Login</button>
+        </form>
+        
+        <form id="register-form" class="auth-form hidden">
+          <input type="text" name="name" placeholder="Name">
+          <input type="tel" name="cellno" placeholder="Cell Number" required >
+          <input type="text" name="addressLine1" placeholder="Address Line 1">
+          <input type="text" name="addressLine2" placeholder="Address Line 2">
+          <input type="text" name="province" placeholder="Province">
+          <select name="country" aria-label="Country">
+            <option value="South Africa" selected>South Africa</option>
+            <option value="Namibia">Namibia</option>
+            <option value="Botswana">Botswana</option>
+            <option value="Lesotho">Lesotho</option>
+            <option value="Eswatini">Eswatini</option>
+            <option value="Zimbabwe">Zimbabwe</option>
+            <option value="Mozambique">Mozambique</option>
+            <option value="Eswatini">Zambia</option>
+            <option value="Other">Other</option>
+          </select>
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <p> Please know we will always seek your consent before sharing your information.</p>
+          <button type="submit" class="btn primary">Register</button>
+        </form>
+        
+        <p id="auth-error" class="error"></p>
+        <div class="auth-actions" style="margin-top:1rem; text-align:center;">
+          <a href="contact.html" class="btn secondary">Contact Us</a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Chat Section -->
+    <div id="chat-section" class="chat-container hidden">
+      <header class="header">
+        <h1>Tax Matters</h1>
+        <div class="header-actions">
+          <span id="user-email"></span>
+          <a id="admin-link" href="/admin.html" class="btn secondary hidden">Admin</a>
+          <button id="logout-btn" class="btn secondary">Logout</button>
+        </div>
+      </header>
+      
+      <div id="main-menu" class="tabs mini-tabs" role="navigation" aria-label="App menu">
+        <button type="button" class="tab active">Chat</button>
+        <button type="button" class="tab" id="open-overtime-btn">Overtime Calculator</button>
+        <button type="button" class="tab" id="irp5-btn">IRP5 Codes</button>
+        <button type="button" class="tab" id="open-needs-btn">Needs Analysis</button>
+        <button type="button" class="tab" id="open-contact-btn">Contact Us</button>
+        <button type="button" class="tab hidden" id="open-admin-btn">Admin</button>
+      </div>
+
+      <main class="chat-main">
+        <section id="chat-panel">
+          <div id="chat-messages" class="messages">
+            <div class="message assistant">
+              <div class="message-content">
+                <p>Hello! I'm your South African Tax Assistant. I can help you with questions about:</p>
+                <ul>
+                  <li>The Income Tax Act (Act 58 of 1962)</li>
+                  <li>Tax return procedures and deadlines</li>
+                  <li>Deductions and rebates</li>
+                  <li>IRP5 codes and compliance</li>
+                </ul>
+                <p>How can I assist you today?</p>
+              </div>
+            </div>
+          </div>
+          
+          <form id="question-form" class="input-area">
+            <textarea 
+              id="question-input" 
+              placeholder="Ask a question about South African tax..."
+              rows="2"
+            ></textarea>
+            <button type="submit" class="btn primary send-btn">
+              <span>Send</span>
+            </button>
+          </form>
+        </section>
+      </main>
+      
+      <aside id="sources-panel" class="sources-panel hidden">
+        <h3>Sources</h3>
+        <div id="sources-list"></div>
+        <button id="close-sources" class="btn secondary">Close</button>
+      </aside>
+    </div>
+  </div>
+  
+  <script src="analytics.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

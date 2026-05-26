@@ -1,0 +1,295 @@
+// public/app.js
+const API_BASE = '/api';
+let authToken = localStorage.getItem('authToken');
+let currentSources = [];
+
+// DOM Elements
+const authSection = document.getElementById('auth-section');
+const chatSection = document.getElementById('chat-section');
+const loginForm = document.getElementById('login-form');
+const registerForm = document.getElementById('register-form');
+const questionForm = document.getElementById('question-form');
+const chatMessages = document.getElementById('chat-messages');
+const questionInput = document.getElementById('question-input');
+const sourcesPanel = document.getElementById('sources-panel');
+const sourcesList = document.getElementById('sources-list');
+const authError = document.getElementById('auth-error');
+const userEmail = document.getElementById('user-email');
+const openOvertimeBtn = document.getElementById('open-overtime-btn');
+const openNeedsBtn = document.getElementById('open-needs-btn');
+const openContactBtn = document.getElementById('open-contact-btn');
+const openAdminBtn = document.getElementById('open-admin-btn');
+const adminLink = document.getElementById('admin-link');
+const chatPanel = document.getElementById('chat-panel');
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  if (authToken) {
+    showChat();
+    loadUserInfo();
+  }
+  setupEventListeners();
+});
+
+function setupEventListeners() {
+  // Auth tabs
+  document.querySelectorAll('#auth-tabs .tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#auth-tabs .tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      const tabName = tab.dataset.tab;
+      loginForm.classList.toggle('hidden', tabName !== 'login');
+      registerForm.classList.toggle('hidden', tabName !== 'register');
+      authError.textContent = '';
+    });
+  });
+
+  // Login
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(loginForm);
+    await authenticate('/auth/login', {
+      email: formData.get('email'),
+      password: formData.get('password')
+    });
+  });
+
+  // Register
+  registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(registerForm);
+    await authenticate('/auth/register', {
+      name: formData.get('name'),
+      cellno: formData.get('cellno'),
+      addressLine1: formData.get('addressLine1'),
+      addressLine2: formData.get('addressLine2'),
+      province: formData.get('province'),
+      country: formData.get('country'),
+
+      email: formData.get('email'),
+      password: formData.get('password')
+    });
+  });
+
+  // Logout
+  const logoutBtn = document.getElementById('logout-btn');
+  logoutBtn?.addEventListener('click', logout);
+
+  // IRP5 Form Viewer
+  const irp5Btn = document.getElementById('irp5-btn');
+  irp5Btn?.addEventListener('click', () => {
+    window.location.href = 'irp5-viewer.html';
+  });
+
+  // Question submission
+  questionForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await submitQuestion();
+  });
+
+  // Enter to submit (Shift+Enter for new line)
+  questionInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitQuestion();
+    }
+  });
+
+  openOvertimeBtn?.addEventListener('click', () => {
+    window.location.href = 'Overtime-Calc.html';
+  });
+
+  openNeedsBtn?.addEventListener('click', () => {
+    window.location.href = 'needs-analysis.html';
+  });
+
+  openContactBtn?.addEventListener('click', () => {
+    window.location.href = 'contact.html';
+  });
+
+  openAdminBtn?.addEventListener('click', () => {
+    window.location.href = 'admin.html';
+  });
+
+  // Close sources panel
+  const closeSourcesBtn = document.getElementById('close-sources');
+  closeSourcesBtn?.addEventListener('click', () => {
+    sourcesPanel.classList.add('hidden');
+  });
+}
+
+async function authenticate(endpoint, data) {
+  try {
+    authError.textContent = '';
+    const response = await fetch(API_BASE + endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Authentication failed');
+    }
+
+    authToken = result.token;
+    localStorage.setItem('authToken', authToken);
+    localStorage.setItem('userEmail', result.user.email);
+    const isAdmin = result.user?.is_admin === 1 || result.user?.is_admin === '1' || result.user?.is_admin === true;
+    localStorage.setItem('is_admin', isAdmin ? '1' : '0');
+    
+    showChat();
+    loadUserInfo();
+    
+    return result;
+  } catch (error) {
+    authError.textContent = error.message;
+    return null;
+  }
+}
+
+function logout() {
+  authToken = null;
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('is_admin');
+  
+  const adminLink = document.getElementById('admin-link');
+  if (adminLink) {
+    adminLink.classList.add('hidden');
+  }
+  
+  showAuth();
+}
+
+
+function showAuth() {
+  authSection.classList.remove('hidden');
+  chatSection.classList.add('hidden');
+}
+
+function showChat() {
+  authSection.classList.add('hidden');
+  chatSection.classList.remove('hidden');
+}
+
+function loadUserInfo() {
+  const email = localStorage.getItem('userEmail');
+  const isAdmin = localStorage.getItem('is_admin') === '1';
+  
+  if (email) {
+    userEmail.textContent = email;
+  }
+
+  if (adminLink) {
+    adminLink.classList.toggle('hidden', !isAdmin);
+  }
+  if (openAdminBtn) {
+    openAdminBtn.classList.toggle('hidden', !isAdmin);
+  }
+}
+
+async function submitQuestion() {
+  const question = questionInput.value.trim();
+  if (!question) return;
+
+  // Add user message
+  addMessage(question, 'user');
+  questionInput.value = '';
+
+  // Show loading
+  const loadingEl = addLoading();
+
+  try {
+    const response = await fetch(API_BASE + '/qa/ask', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
+      body: JSON.stringify({ question })
+    });
+
+    if (response.status === 401 || response.status === 403) {
+      logout();
+      return;
+    }
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to get answer');
+    }
+
+    loadingEl.remove();
+    addMessage(result.answer, 'assistant', result.sources);
+  } catch (error) {
+    loadingEl.remove();
+    addMessage('Sorry, I encountered an error. Please try again.', 'assistant');
+    console.error('Question error:', error);
+  }
+}
+
+function addMessage(content, role, sources = null) {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message ${role}`;
+
+  const contentDiv = document.createElement('div');
+  contentDiv.className = 'message-content';
+  
+  // Simple markdown-like rendering
+  const formattedContent = formatContent(content);
+  contentDiv.innerHTML = formattedContent;
+
+  if (sources && sources.length > 0) {
+    const sourcesLink = document.createElement('span');
+    sourcesLink.className = 'sources-link';
+    sourcesLink.textContent = `View ${sources.length} source(s)`;
+    sourcesLink.addEventListener('click', () => showSources(sources));
+    contentDiv.appendChild(sourcesLink);
+  }
+
+  messageDiv.appendChild(contentDiv);
+  chatMessages.appendChild(messageDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function formatContent(content) {
+  return content
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>')
+    .replace(/^/, '<p>')
+    .replace(/$/, '</p>');
+}
+
+function addLoading() {
+  const loadingDiv = document.createElement('div');
+  loadingDiv.className = 'message assistant';
+  loadingDiv.innerHTML = `
+    <div class="message-content">
+      <div class="loading">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  `;
+  chatMessages.appendChild(loadingDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  return loadingDiv;
+}
+
+function showSources(sources) {
+  sourcesList.innerHTML = sources.map(source => `
+    <div class="source-item">
+      <strong>${source.file}</strong>
+      ${source.section ? `<span>${source.section}</span>` : ''}
+      <br>
+      <small>Relevance: ${source.relevance}%</small>
+    </div>
+  `).join('');
+  
+  sourcesPanel.classList.remove('hidden');
+}

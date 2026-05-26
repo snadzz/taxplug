@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Tax Matters</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .admin-container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+    }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .admin-card {
+      background: var(--card);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+    }
+    .admin-card h2 {
+      margin-top: 0;
+      color: var(--primary);
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .admin-table th,
+    .admin-table td {
+      text-align: left;
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .admin-table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .admin-form {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .admin-form label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-weight: 600;
+    }
+    .admin-form input {
+      padding: 0.95rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+    }
+    .stats-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .admin-notice {
+      margin-top: 1rem;
+      color: var(--text-light);
+    }
+    .message-box {
+      margin-top: 1rem;
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      display: none;
+    }
+    .message-box.success {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+    }
+    .message-box.error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+    .small-list {
+      margin: 0;
+      padding-left: 1.2rem;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <header class="header">
+      <h1>Admin Dashboard</h1>
+      <div class="header-actions">
+        <a href="index.html" class="btn secondary">Back to Home</a>
+      </div>
+    </header>
+
+    <div class="admin-grid">
+      <section class="admin-card">
+        <h2>Visitor Metrics</h2>
+        <p class="admin-notice">Monitor live activity and total visits for the current day.</p>
+        <div>
+          <p>Visitors currently online</p>
+          <p class="stats-value" id="online-visitors">0</p>
+        </div>
+        <div>
+          <p>Visits today</p>
+          <p class="stats-value" id="visits-today">0</p>
+        </div>
+      </section>
+
+      <section class="admin-card">
+        <h2>Overtime Threshold</h2>
+        <p class="admin-notice">Set the threshold used by the overtime calculator formula.</p>
+        <div>
+          <p>Active threshold</p>
+          <p class="stats-value" id="threshold-value">21900</p>
+        </div>
+        <form id="threshold-form" class="admin-form">
+          <label>
+            New threshold value
+            <input id="threshold-input" type="number" min="0" step="1" required>
+          </label>
+          <button type="submit" class="btn primary">Update threshold</button>
+        </form>
+      </section>
+
+      <section class="admin-card" style="grid-column: span 2;">
+        <h2>Registered Users</h2>
+        <table class="admin-table" id="user-table"></table>
+      </section>
+
+      <section class="admin-card">
+        <h2>Admin Management</h2>
+        <p class="admin-notice">Promote existing user emails to administrator access.</p>
+        <form id="admin-email-form" class="admin-form">
+          <label>
+            User email address
+            <input id="admin-email-input" type="email" placeholder="admin@example.com" required>
+          </label>
+          <button type="submit" class="btn primary">Make admin</button>
+        </form>
+        <div class="message-box success" id="admin-success"></div>
+        <div class="message-box error" id="admin-error"></div>
+      </section>
+
+      <section class="" id="admin-transact">
+        <h2>Admin Master Console: Client Submissions</h2>
+    <table id="adminTransactTable">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Client Full Name</th>
+                <th>Cell Number</th>
+                <th>Province</th>
+                <th>Total Income</th>
+                <th>Total Expenses</th>
+                <th>Callback Req?</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="transactTableBody">
+            </tbody>
+    </table>
+      </section>
+
+      <section class="admin-card">
+        <h2>Backend State</h2>
+        <p class="admin-notice">Current configuration and admin user count.</p>
+        <div id="backend-state"></div>
+        <ul id="admin-list" class="small-list"></ul>
+      </section>
+    </div>
+  </div>
+
+  <script src="analytics.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

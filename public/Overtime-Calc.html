@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overtime Calculator | Tax Matters</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <h1>Tax Matters</h1>
+      <div class="header-actions">
+        <span id="user-email"></span>
+        <button id="logout-btn" class="btn secondary">Logout</button>
+      </div>
+    </header>
+
+    <div id="main-menu" class="tabs mini-tabs" role="navigation" aria-label="App menu">
+      <button type="button" class="tab" id="open-chat-btn">Chat</button>
+      <button type="button" class="tab active">Overtime Calculator</button>
+      <button type="button" class="tab" id="open-needs-btn">Needs Analysis</button>
+      <button type="button" class="tab" id="open-contact-btn">Contact Us</button>
+    </div>
+
+    <main class="chat-main">
+      <section id="paye-panel">
+        <div class="calculator-card">
+          <h2>Monthly Overtime & PAYE Calculator</h2>
+          <p>Enter your monthly salary and total package to estimate monthly PAYE, overtime totals, and monthly take-home pay.</p>
+          <p>Please note the legal threshold for overtime is R22,466.74 for 2026</p>
+          <form id="paye-form" class="calculator-form">
+            <label>
+              Monthly salary (taxable cash salary)
+              <input id="salary-monthly" type="number" min="0" step="0.01" placeholder="e.g. 40000" required>
+            </label>
+            <label>
+              Total package / CTC (monthly)
+              <input id="total-package-monthly" type="number" min="0" step="0.01" placeholder="e.g. 55000">
+            </label>
+
+            <div class="overtime-threshold">
+            <label>
+                <span id="threshold" class="overtime-total">Threshold: Yes/No</span>
+            </label>
+            </div>
+
+            <label>
+              Overtime type 1
+              <div class="overtime-row">
+                <select id="overtime1-rate" name="OT1">
+                  <option value="1">1</option>
+                  <option value="1.5">1.5</option>
+                  <option value="2">2</option>
+                </select>
+                <input id="Overtime1" type="number" min="0" step="1" placeholder="hours">
+                <span id="overtime1-total" class="overtime-total">Total: 0.00</span>
+              </div>
+            </label>
+            <label>
+              Overtime type 2
+              <div class="overtime-row">
+                <select id="overtime2-rate" name="OT2">
+                  <option value="1">1</option>
+                  <option value="1.5">1.5</option>
+                  <option value="2">2</option>
+                </select>
+                <input id="Overtime2" type="number" min="0" step="1" placeholder="hours">
+                <span id="overtime2-total" class="overtime-total">Total: 0.00</span>
+              </div>
+            </label>
+            <label>
+              Overtime type 3
+              <div class="overtime-row">
+                <select id="overtime3-rate" name="OT3">
+                  <option value="1">1</option>
+                  <option value="1.5">1.5</option>
+                  <option value="2">2</option>
+                </select>
+                <input id="Overtime3" type="number" min="0" step="1" placeholder="hours">
+                <span id="overtime3-total" class="overtime-total">Total: 0.00</span>
+              </div>
+            </label>
+            <div class="overtime-summary">
+              <label>
+                Total overtime hours
+                <input id="overtime-hours-total" type="text" readonly value="0.00">
+              </label>
+              <label>
+                Total overtime pay
+                <input id="overtime-pay-total" type="text" readonly value="0.00">
+              </label>
+            </div>
+            <button type="submit" class="btn primary">Calculate PAYE</button>
+          </form>
+          <div id="paye-result" class="calculator-result"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="analytics.js"></script>
+  <script src="overtime-calc.js"></script>
+</body>
+</html>
