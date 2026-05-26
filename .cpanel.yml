@@ -1,0 +1,7 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/taxplugc/TAX-QA-TOOL
+    - /bin/cp -R * $DEPLOYPATH
+    - cd $DEPLOYPATH
+    - /bin/npm install --production
