@@ -1,15 +1,18 @@
 // server/services/vectorStore.mjs
 
-import Database from 'better-sqlite3';
+import { createClient } from '@libsql/client';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { pipeline } from '@xenova/transformers';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbPath = path.join(__dirname, '../../data/vectors.db');
-const db = new Database(dbPath);
+const dbPath = path.join(__dirname, '../../public/data/vectors.db');
+
+// @libsql uses a URL connection style even for local files
+const db = createClient({
+  url: `file:${dbPath}`
+});
 
 // Create table if needed
 db.exec(`

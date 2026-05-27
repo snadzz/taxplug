@@ -1,11 +1,17 @@
 // server/models/User.js
-import Database from 'better-sqlite3';
-import bcrypt from 'bcryptjs';
+import { createClient } from '@libsql/client';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const db = new Database(path.join(__dirname, '../../data/users.db'));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Ensure this path points to wherever your main user database file lives
+const dbPath = path.join(__dirname, '../../public/data/vectors.db'); 
+
+const db = createClient({
+  url: `file:${dbPath}`
+});
 
 export function initializeDatabase() {
   db.exec(`
