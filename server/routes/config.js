@@ -16,8 +16,8 @@ router.post('/git-deploy-webhook-xyz', (req, res) => {
         console.log('Push detected on main branch. Starting automated deployment...');
         
         // Adjust these to match your exact server directory paths
-        const repoPath = '/home/YOUR_CPANEL_USERNAME/repositories/ai-app';
-        const appPath = '/home/YOUR_CPANEL_USERNAME/ai-app';
+        const repoPath = '/home/taxplugc/repositories/ai-app';
+        const appPath = '/home/taxplugc/ai-app';
 
         exec(`cd ${repoPath} && git pull origin main`, (err, stdout, stderr) => {
             if (err) {
