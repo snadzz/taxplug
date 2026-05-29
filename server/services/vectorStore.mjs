@@ -1,21 +1,19 @@
-// server/services/vectorStore.mjs
-
 import { createClient } from '@libsql/client';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { pipeline } from '@xenova/transformers';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const dbPath = path.join(__dirname, '../../public/data/vectors.db');
 
-// @libsql uses a URL connection style even for local files
 const db = createClient({
   url: `file:${dbPath}`
 });
 
-// Create table if needed
-db.exec(`
+// Create table if needed (Async via LibSQL)
+await db.execute(`
   CREATE TABLE IF NOT EXISTS document_chunks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     content TEXT NOT NULL,
@@ -48,18 +46,19 @@ export async function generateEmbedding(text) {
 export async function storeChunk(content, sourceFile, section = null, pageNumber = null) {
   const embedding = await generateEmbedding(content);
 
-  const stmt = db.prepare(`
-    INSERT INTO document_chunks (content, embedding, source_file, section, page_number)
-    VALUES (?, ?, ?, ?, ?)
-  `);
-
-  stmt.run(
-    content,
-    JSON.stringify(embedding),
-    sourceFile,
-    section,
-    pageNumber
-  );
+  await db.execute({
+    sql: `
+      INSERT INTO document_chunks (content, embedding, source_file, section, page_number)
+      VALUES (?, ?, ?, ?, ?)
+    `,
+    args: [
+      content,
+      JSON.stringify(embedding),
+      sourceFile,
+      section,
+      pageNumber
+    ]
+  });
 }
 
 function cosineSimilarity(a, b) {
@@ -69,12 +68,15 @@ function cosineSimilarity(a, b) {
     na += a[i] * a[i];
     nb += b[i] * b[i];
   }
+  if (na === 0 || nb === 0) return 0;
   return dot / (Math.sqrt(na) * Math.sqrt(nb));
 }
 
 export async function searchSimilarChunks(query, topK = 5) {
   const queryEmbedding = await generateEmbedding(query);
-  const rows = db.prepare('SELECT * FROM document_chunks').all();
+  
+  const result = await db.execute('SELECT * FROM document_chunks');
+  const rows = result.rows;
 
   const scored = rows.map(row => ({
     ...row,
@@ -86,7 +88,9 @@ export async function searchSimilarChunks(query, topK = 5) {
   return scored.slice(0, topK);
 }
 
-export function getChunkCount() {
-  const row = db.prepare('SELECT COUNT(*) AS c FROM document_chunks').get();
-  return row.c;
+export async function getChunkCount() {
+  const result = await db.execute('SELECT COUNT(*) AS c FROM document_chunks');
+  return result.rows[0]?.c || 0;
 }
+
+export default db;

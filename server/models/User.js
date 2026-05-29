@@ -2,28 +2,38 @@
 import { createClient } from '@libsql/client';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import bcrypt from 'bcryptjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Ensure this path points to wherever your main user database file lives
 const dbPath = path.join(__dirname, '../../public/data/vectors.db'); 
 
-const db = createClient({
+export const db = createClient({
   url: `file:${dbPath}`
 });
 
-export function initializeDatabase() {
-  db.exec(`
+export async function initializeDatabase() {
+  // Setup tables using individual atomic .execute() methods
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
       name TEXT,
       is_admin INTEGER DEFAULT 0,
+      cellno TEXT,
+      addressLine1 TEXT,
+      addressLine2 TEXT,
+      province TEXT,
+      country TEXT,
+      reset_token TEXT,
+      reset_token_expires DATETIME,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
-    
+  `);
+
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS chat_history (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
@@ -33,12 +43,16 @@ export function initializeDatabase() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users(id)
     );
+  `);
 
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS app_config (
       key TEXT PRIMARY KEY,
       value TEXT
     );
+  `);
 
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS analytics_sessions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       visitor_id TEXT UNIQUE NOT NULL,
@@ -47,7 +61,9 @@ export function initializeDatabase() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users(id)
     );
+  `);
 
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS analytics_visits (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       visitor_id TEXT NOT NULL,
@@ -57,106 +73,149 @@ export function initializeDatabase() {
     );
   `);
 
-  const existingThreshold = db.prepare('SELECT value FROM app_config WHERE key = ?').get('overtime_threshold');
+  const existingThresholdRes = await db.execute({
+    sql: 'SELECT value FROM app_config WHERE key = ?',
+    args: ['overtime_threshold']
+  });
+  const existingThreshold = existingThresholdRes.rows[0];
+
   if (!existingThreshold) {
-    db.prepare('INSERT INTO app_config (key, value) VALUES (?, ?)').run('overtime_threshold', '21900');
+    await db.execute({
+      sql: 'INSERT INTO app_config (key, value) VALUES (?, ?)',
+      args: ['overtime_threshold', '21900']
+    });
   }
 
-  // Ensure specific admin user is promoted if user exists
   const adminEmail = 'dubazank@gmail.com';
-  const adminUser = db.prepare('SELECT id FROM users WHERE email = ?').get(adminEmail);
+  const adminUserRes = await db.execute({
+    sql: 'SELECT id FROM users WHERE email = ?',
+    args: [adminEmail]
+  });
+  const adminUser = adminUserRes.rows[0];
+
   if (adminUser) {
-    db.prepare('UPDATE users SET is_admin = 1 WHERE email = ?').run(adminEmail);
+    await db.execute({
+      sql: 'UPDATE users SET is_admin = 1 WHERE email = ?',
+      args: [adminEmail]
+    });
     console.log(`✓ Admin privileges granted to ${adminEmail}`);
   }
 }
 
 export async function createUser(email, password, name) {
   const hashedPassword = await bcrypt.hash(password, 10);
-  const userCount = db.prepare('SELECT COUNT(*) as c FROM users').get().c;
+  
+  const userCountRes = await db.execute('SELECT COUNT(*) as c FROM users');
+  const userCount = userCountRes.rows[0]?.c || 0;
   const isAdmin = userCount === 0 ? 1 : 0;
-  const stmt = db.prepare('INSERT INTO users (email, password, name, is_admin) VALUES (?, ?, ?, ?)');
-  const result = stmt.run(email, hashedPassword, name, isAdmin);
-  return { id: result.lastInsertRowid, email, name, is_admin: isAdmin };
+
+  const result = await db.execute({
+    sql: 'INSERT INTO users (email, password, name, is_admin) VALUES (?, ?, ?, ?)',
+    args: [email, hashedPassword, name, isAdmin]
+  });
+
+  return { id: Number(result.lastInsertRowid), email, name, is_admin: isAdmin };
 }
 
-export function findUserByEmail(email) {
-  const stmt = db.prepare('SELECT * FROM users WHERE email = ?');
-  return stmt.get(email);
+export async function findUserByEmail(email) {
+  const result = await db.execute({
+    sql: 'SELECT * FROM users WHERE email = ?',
+    args: [email]
+  });
+  return result.rows[0] || null;
 }
 
 export async function verifyPassword(password, hashedPassword) {
   return bcrypt.compare(password, hashedPassword);
 }
 
-export function saveChatMessage(userId, question, answer, sources) {
-  const stmt = db.prepare(
-    'INSERT INTO chat_history (user_id, question, answer, sources) VALUES (?, ?, ?, ?)'
-  );
-  stmt.run(userId, question, answer, JSON.stringify(sources));
+export async function saveChatMessage(userId, question, answer, sources) {
+  await db.execute({
+    sql: 'INSERT INTO chat_history (user_id, question, answer, sources) VALUES (?, ?, ?, ?)',
+    args: [userId, question, answer, JSON.stringify(sources)]
+  });
 }
 
-export function getChatHistory(userId, limit = 20) {
-  const stmt = db.prepare(
-    'SELECT * FROM chat_history WHERE user_id = ? ORDER BY created_at DESC LIMIT ?'
-  );
-  return stmt.all(userId, limit);
+export async function getChatHistory(userId, limit = 20) {
+  const result = await db.execute({
+    sql: 'SELECT * FROM chat_history WHERE user_id = ? ORDER BY created_at DESC LIMIT ?',
+    args: [userId, limit]
+  });
+  return result.rows;
 }
 
-export function getConfig(key, defaultValue = null) {
-  const stmt = db.prepare('SELECT value FROM app_config WHERE key = ?');
-  const row = stmt.get(key);
+export async function getConfig(key, defaultValue = null) {
+  const result = await db.execute({
+    sql: 'SELECT value FROM app_config WHERE key = ?',
+    args: [key]
+  });
+  const row = result.rows[0];
   return row ? row.value : defaultValue;
 }
 
-export function setConfig(key, value) {
-  const stmt = db.prepare(
-    'INSERT INTO app_config (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value'
-  );
-  stmt.run(key, String(value));
+export async function setConfig(key, value) {
+  await db.execute({
+    sql: 'INSERT INTO app_config (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value',
+    args: [key, String(value)]
+  });
 }
 
-export function promoteUserToAdmin(email) {
-  const user = findUserByEmail(email);
+export async function promoteUserToAdmin(email) {
+  const user = await findUserByEmail(email);
   if (!user) return null;
-  db.prepare('UPDATE users SET is_admin = 1 WHERE email = ?').run(email);
+  await db.execute({
+    sql: 'UPDATE users SET is_admin = 1 WHERE email = ?',
+    args: [email]
+  });
   return { ...user, is_admin: 1 };
 }
 
-export function getAdminEmails() {
-  const stmt = db.prepare('SELECT email FROM users WHERE is_admin = 1 ORDER BY email');
-  return stmt.all().map(row => row.email);
+export async function getAdminEmails() {
+  const result = await db.execute('SELECT email FROM users WHERE is_admin = 1 ORDER BY email');
+  return result.rows.map(row => row.email);
 }
 
-export function trackVisitor(visitorId, userId = null) {
+export async function trackVisitor(visitorId, userId = null) {
   if (!visitorId) return null;
   const now = new Date().toISOString();
-  const existing = db.prepare('SELECT id FROM analytics_sessions WHERE visitor_id = ?').get(visitorId);
+  
+  const existingRes = await db.execute({
+    sql: 'SELECT id FROM analytics_sessions WHERE visitor_id = ?',
+    args: [visitorId]
+  });
+  const existing = existingRes.rows[0];
 
   if (existing) {
-    db.prepare('UPDATE analytics_sessions SET user_id = ?, last_seen = ? WHERE visitor_id = ?')
-      .run(userId, now, visitorId);
+    await db.execute({
+      sql: 'UPDATE analytics_sessions SET user_id = ?, last_seen = ? WHERE visitor_id = ?',
+      args: [userId, now, visitorId]
+    });
   } else {
-    db.prepare('INSERT INTO analytics_sessions (visitor_id, user_id, last_seen) VALUES (?, ?, ?)')
-      .run(visitorId, userId, now);
+    await db.execute({
+      sql: 'INSERT INTO analytics_sessions (visitor_id, user_id, last_seen) VALUES (?, ?, ?)',
+      args: [visitorId, userId, now]
+    });
   }
 
-  db.prepare('INSERT INTO analytics_visits (visitor_id, user_id) VALUES (?, ?)').run(visitorId, userId);
+  await db.execute({
+    sql: 'INSERT INTO analytics_visits (visitor_id, user_id) VALUES (?, ?)',
+    args: [visitorId, userId]
+  });
+  
   return visitorId;
 }
 
-export function getOnlineVisitorCount(cutoffMinutes = 5) {
-  const stmt = db.prepare(
-    'SELECT COUNT(*) as count FROM analytics_sessions WHERE last_seen >= datetime("now", ?)' 
-  );
-  return stmt.get(`-${cutoffMinutes} minutes`).count;
+export async function getOnlineVisitorCount(cutoffMinutes = 5) {
+  const result = await db.execute({
+    sql: 'SELECT COUNT(*) as count FROM analytics_sessions WHERE last_seen >= datetime("now", ?)',
+    args: [`-${cutoffMinutes} minutes`]
+  });
+  return result.rows[0]?.count || 0;
 }
 
-export function getTodaysVisitCount() {
-  const stmt = db.prepare(
-    'SELECT COUNT(*) as count FROM analytics_visits WHERE date(visited_at) = date("now", "localtime")'
-  );
-  return stmt.get().count;
+export async function getTodaysVisitCount() {
+  const result = await db.execute('SELECT COUNT(*) as count FROM analytics_visits WHERE date(visited_at) = date("now", "localtime")');
+  return result.rows[0]?.count || 0;
 }
 
 export default db;

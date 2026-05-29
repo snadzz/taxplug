@@ -22,6 +22,16 @@ const openAdminBtn = document.getElementById('open-admin-btn');
 const adminLink = document.getElementById('admin-link');
 const chatPanel = document.getElementById('chat-panel');
 
+// New Password Recovery UI Elements
+const forgotPasswordSection = document.getElementById('forgot-password-section');
+const forgotEmailForm = document.getElementById('forgot-email-form');
+const forgotResetForm = document.getElementById('forgot-reset-form');
+const toForgotViewBtn = document.getElementById('to-forgot-view');
+const backToLoginBtn = document.getElementById('back-to-login');
+const forgotEmailInput = document.getElementById('forgot-email');
+const forgotCodeInput = document.getElementById('forgot-code');
+const forgotNewPasswordInput = document.getElementById('forgot-new-password');
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   if (authToken) {
@@ -41,8 +51,87 @@ function setupEventListeners() {
       const tabName = tab.dataset.tab;
       loginForm.classList.toggle('hidden', tabName !== 'login');
       registerForm.classList.toggle('hidden', tabName !== 'register');
+      forgotPasswordSection.classList.add('hidden'); // Ensure wizard closes if tab changes
       authError.textContent = '';
     });
+  });
+
+  // Toggle Visibility: Into Password Reset wizard state
+  toForgotViewBtn?.addEventListener('click', () => {
+    loginForm.classList.add('hidden');
+    registerForm.classList.add('hidden');
+    forgotPasswordSection.classList.remove('hidden');
+    forgotEmailForm.classList.remove('hidden');
+    forgotResetForm.classList.add('hidden');
+    authError.textContent = '';
+  });
+
+  // Toggle Visibility: Exit Wizard back to normal login state
+  backToLoginBtn?.addEventListener('click', () => {
+    forgotPasswordSection.classList.add('hidden');
+    loginForm.classList.remove('hidden');
+    authError.textContent = '';
+    
+    // Set login tab state visually back to active
+    document.querySelectorAll('#auth-tabs .tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('#auth-tabs .tab[data-tab="login"]')?.classList.add('active');
+  });
+
+  // Forgot Password Step 1: Submit email to request a random verification token code
+  forgotEmailForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    authError.textContent = '';
+    const email = forgotEmailInput.value.trim();
+
+    try {
+      const response = await fetch(`${API_BASE}/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send recovery code.');
+      }
+
+      // Success: Proceed to validation code input state
+      forgotEmailForm.classList.add('hidden');
+      forgotResetForm.classList.remove('hidden');
+    } catch (error) {
+      authError.textContent = error.message;
+    }
+  });
+
+  // Forgot Password Step 2: Validate token code and apply the new password changes
+  forgotResetForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    authError.textContent = '';
+    const email = forgotEmailInput.value.trim();
+    const token = forgotCodeInput.value.trim();
+    const newPassword = forgotNewPasswordInput.value;
+
+    try {
+      const response = await fetch(`${API_BASE}/auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, token, newPassword })
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to update your password.');
+      }
+
+      // Success: Flash successful confirmation, clean inputs, and redirect back to login
+      alert('Password changed successfully! You can now log in.');
+      forgotEmailInput.value = '';
+      forgotCodeInput.value = '';
+      forgotNewPasswordInput.value = '';
+      backToLoginBtn.click();
+    } catch (error) {
+      authError.textContent = error.message;
+    }
   });
 
   // Login
@@ -66,7 +155,6 @@ function setupEventListeners() {
       addressLine2: formData.get('addressLine2'),
       province: formData.get('province'),
       country: formData.get('country'),
-
       email: formData.get('email'),
       password: formData.get('password')
     });
@@ -164,7 +252,6 @@ function logout() {
   showAuth();
 }
 
-
 function showAuth() {
   authSection.classList.remove('hidden');
   chatSection.classList.add('hidden');
@@ -195,11 +282,9 @@ async function submitQuestion() {
   const question = questionInput.value.trim();
   if (!question) return;
 
-  // Add user message
   addMessage(question, 'user');
   questionInput.value = '';
 
-  // Show loading
   const loadingEl = addLoading();
 
   try {
@@ -239,7 +324,6 @@ function addMessage(content, role, sources = null) {
   const contentDiv = document.createElement('div');
   contentDiv.className = 'message-content';
   
-  // Simple markdown-like rendering
   const formattedContent = formatContent(content);
   contentDiv.innerHTML = formattedContent;
 
@@ -258,7 +342,7 @@ function addMessage(content, role, sources = null) {
 
 function formatContent(content) {
   return content
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*\*(.*?)\*\"/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     .replace(/\n\n/g, '</p><p>')
     .replace(/\n/g, '<br>')
