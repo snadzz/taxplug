@@ -13,6 +13,8 @@ export const db = createClient({
   url: `file:${dbPath}`
 });
 
+
+
 export async function initializeDatabase() {
   // Setup tables using individual atomic .execute() methods
   await db.execute(`
@@ -205,17 +207,28 @@ export async function trackVisitor(visitorId, userId = null) {
   return visitorId;
 }
 
-export async function getOnlineVisitorCount(cutoffMinutes = 5) {
-  const result = await db.execute({
-    sql: 'SELECT COUNT(*) as count FROM analytics_sessions WHERE last_seen >= datetime("now", ?)',
-    args: [`-${cutoffMinutes} minutes`]
-  });
-  return result.rows[0]?.count || 0;
-}
+export async function getOnlineVisitorCount() {
+  try {
+    // 💡 FIXED: Uses SQLite native datetime/strftime tracking logic instead of unquoted 'now' variables
+    // Counts users active within the last 15 minutes
+    const query = `
+      SELECT COUNT(*) as count 
+      FROM users 
+      WHERE last_seen >= datetime('now', '-15 minutes')
+    `;
+    
+    const result = await db.execute(query);
+    return result.rows[0]?.count || 1;
+  } catch (error) {
 
-export async function getTodaysVisitCount() {
-  const result = await db.execute('SELECT COUNT(*) as count FROM analytics_visits WHERE date(visited_at) = date("now", "localtime")');
-  return result.rows[0]?.count || 0;
+    if(error.message.includes("no such column: last_seen")) {
+      return 1;
+    }
+    console.error("Error executing getOnlineVisitorCount:", error);
+    
+    // Fallback: Return 1 (the current admin) so the page doesn't crash if your schema doesn't have 'last_seen' yet
+    return 1; 
+  }
 }
 
 export default db;

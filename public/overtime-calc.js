@@ -2,6 +2,7 @@ const authToken = localStorage.getItem('authToken');
 const userEmail = document.getElementById('user-email');
 const logoutBtn = document.getElementById('logout-btn');
 const openChatBtn = document.getElementById('open-chat-btn');
+const openirp5Btn = document.getElementById('irp5-btn');
 const openNeedsBtn = document.getElementById('open-needs-btn');
 const openContactBtn = document.getElementById('open-contact-btn');
 const payeForm = document.getElementById('paye-form');
@@ -54,6 +55,9 @@ function setupEventListeners() {
   logoutBtn?.addEventListener('click', logout);
   openChatBtn?.addEventListener('click', () => {
     window.location.href = 'index.html';
+  });
+  openirp5Btn?.addEventListener('click', () => {
+    window.location.href = 'irp5-viewer.html';
   });
   openNeedsBtn?.addEventListener('click', () => {
     window.location.href = 'needs-analysis.html';

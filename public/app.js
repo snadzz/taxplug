@@ -34,8 +34,19 @@ const forgotNewPasswordInput = document.getElementById('forgot-new-password');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+  // If the user lands on the registration/login views but has a valid active token session
+  if (authToken && window.location.pathname.endsWith('login.html')) {
+    window.location.href = 'chat.html'; // Direct them instantly to their active canvas
+    return;
+  }
+
+  // If the user tries to load the chat view without being logged in
+  if (!authToken && window.location.pathname.endsWith('chat.html')) {
+    window.location.href = 'login.html'; // Force security portal check redirection
+    return;
+  }
+
   if (authToken) {
-    showChat();
     loadUserInfo();
   }
   setupEventListeners();
@@ -49,28 +60,30 @@ function setupEventListeners() {
       tab.classList.add('active');
       
       const tabName = tab.dataset.tab;
-      loginForm.classList.toggle('hidden', tabName !== 'login');
-      registerForm.classList.toggle('hidden', tabName !== 'register');
-      forgotPasswordSection.classList.add('hidden'); // Ensure wizard closes if tab changes
-      authError.textContent = '';
+      if (loginForm) loginForm.classList.toggle('hidden', tabName !== 'login');
+      if (registerForm) registerForm.classList.toggle('hidden', tabName !== 'register');
+      if (forgotPasswordSection) forgotPasswordSection.classList.add('hidden'); 
+      if (authError) authError.textContent = '';
     });
   });
 
   // Toggle Visibility: Into Password Reset wizard state
   toForgotViewBtn?.addEventListener('click', () => {
-    loginForm.classList.add('hidden');
-    registerForm.classList.add('hidden');
-    forgotPasswordSection.classList.remove('hidden');
-    forgotEmailForm.classList.remove('hidden');
-    forgotResetForm.classList.add('hidden');
-    authError.textContent = '';
+    if (loginForm) loginForm.classList.add('hidden');
+    if (registerForm) registerForm.classList.add('hidden');
+    if (forgotPasswordSection) {
+      forgotPasswordSection.classList.remove('hidden');
+      forgotEmailForm?.classList.remove('hidden');
+      forgotResetForm?.classList.add('hidden');
+    }
+    if (authError) authError.textContent = '';
   });
 
   // Toggle Visibility: Exit Wizard back to normal login state
   backToLoginBtn?.addEventListener('click', () => {
-    forgotPasswordSection.classList.add('hidden');
-    loginForm.classList.remove('hidden');
-    authError.textContent = '';
+    if (forgotPasswordSection) forgotPasswordSection.classList.add('hidden');
+    if (loginForm) loginForm.classList.remove('hidden');
+    if (authError) authError.textContent = '';
     
     // Set login tab state visually back to active
     document.querySelectorAll('#auth-tabs .tab').forEach(t => t.classList.remove('active'));
@@ -80,8 +93,8 @@ function setupEventListeners() {
   // Forgot Password Step 1: Submit email to request a random verification token code
   forgotEmailForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    authError.textContent = '';
-    const email = forgotEmailInput.value.trim();
+    if (authError) authError.textContent = '';
+    const email = forgotEmailInput?.value.trim();
 
     try {
       const response = await fetch(`${API_BASE}/auth/forgot-password`, {
@@ -97,19 +110,19 @@ function setupEventListeners() {
 
       // Success: Proceed to validation code input state
       forgotEmailForm.classList.add('hidden');
-      forgotResetForm.classList.remove('hidden');
+      forgotResetForm?.classList.remove('hidden');
     } catch (error) {
-      authError.textContent = error.message;
+      if (authError) authError.textContent = error.message;
     }
   });
 
   // Forgot Password Step 2: Validate token code and apply the new password changes
   forgotResetForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    authError.textContent = '';
-    const email = forgotEmailInput.value.trim();
-    const token = forgotCodeInput.value.trim();
-    const newPassword = forgotNewPasswordInput.value;
+    if (authError) authError.textContent = '';
+    const email = forgotEmailInput?.value.trim();
+    const token = forgotCodeInput?.value.trim();
+    const newPassword = forgotNewPasswordInput?.value;
 
     try {
       const response = await fetch(`${API_BASE}/auth/reset-password`, {
@@ -123,19 +136,18 @@ function setupEventListeners() {
         throw new Error(result.error || 'Failed to update your password.');
       }
 
-      // Success: Flash successful confirmation, clean inputs, and redirect back to login
       alert('Password changed successfully! You can now log in.');
-      forgotEmailInput.value = '';
-      forgotCodeInput.value = '';
-      forgotNewPasswordInput.value = '';
-      backToLoginBtn.click();
+      if (forgotEmailInput) forgotEmailInput.value = '';
+      if (forgotCodeInput) forgotCodeInput.value = '';
+      if (forgotNewPasswordInput) forgotNewPasswordInput.value = '';
+      backToLoginBtn?.click();
     } catch (error) {
-      authError.textContent = error.message;
+      if (authError) authError.textContent = error.message;
     }
   });
 
   // Login
-  loginForm.addEventListener('submit', async (e) => {
+  loginForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(loginForm);
     await authenticate('/auth/login', {
@@ -145,7 +157,7 @@ function setupEventListeners() {
   });
 
   // Register
-  registerForm.addEventListener('submit', async (e) => {
+  registerForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(registerForm);
     await authenticate('/auth/register', {
@@ -171,13 +183,13 @@ function setupEventListeners() {
   });
 
   // Question submission
-  questionForm.addEventListener('submit', async (e) => {
+  questionForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     await submitQuestion();
   });
 
   // Enter to submit (Shift+Enter for new line)
-  questionInput.addEventListener('keydown', (e) => {
+  questionInput?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       submitQuestion();
@@ -203,13 +215,13 @@ function setupEventListeners() {
   // Close sources panel
   const closeSourcesBtn = document.getElementById('close-sources');
   closeSourcesBtn?.addEventListener('click', () => {
-    sourcesPanel.classList.add('hidden');
+    sourcesPanel?.classList.add('hidden');
   });
 }
 
 async function authenticate(endpoint, data) {
   try {
-    authError.textContent = '';
+    if (authError) authError.textContent = '';
     const response = await fetch(API_BASE + endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -233,7 +245,7 @@ async function authenticate(endpoint, data) {
     
     return result;
   } catch (error) {
-    authError.textContent = error.message;
+    if (authError) authError.textContent = error.message;
     return null;
   }
 }
@@ -253,20 +265,36 @@ function logout() {
 }
 
 function showAuth() {
-  authSection.classList.remove('hidden');
-  chatSection.classList.add('hidden');
+  // Instead of shifting layout classes, bounce the window to the security form view
+  if (!window.location.pathname.endsWith('login.html')) {
+    window.location.href = 'login.html';
+  }
 }
 
 function showChat() {
-  authSection.classList.add('hidden');
-  chatSection.classList.remove('hidden');
+  // If we just authenticated inside login.html, route straight to chat space canvas
+  if (window.location.pathname.endsWith('login.html')) {
+    // Check if the user came from a specific home-page feature link target parameters string
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirect = urlParams.get('redirect');
+    
+    if (redirect === 'overtime') {
+      window.location.href = 'Overtime-Calc.html';
+    } else if (redirect === 'needs') {
+      window.location.href = 'needs-analysis.html';
+    } else {
+      window.location.href = 'chat.html'; // Route to core console workspace page
+    }
+  }
 }
+  
+
 
 function loadUserInfo() {
   const email = localStorage.getItem('userEmail');
   const isAdmin = localStorage.getItem('is_admin') === '1';
   
-  if (email) {
+  if (email && userEmail) {
     userEmail.textContent = email;
   }
 
@@ -279,6 +307,7 @@ function loadUserInfo() {
 }
 
 async function submitQuestion() {
+  if (!questionInput) return;
   const question = questionInput.value.trim();
   if (!question) return;
 
@@ -318,6 +347,7 @@ async function submitQuestion() {
 }
 
 function addMessage(content, role, sources = null) {
+  if (!chatMessages) return;
   const messageDiv = document.createElement('div');
   messageDiv.className = `message ${role}`;
 
@@ -351,6 +381,7 @@ function formatContent(content) {
 }
 
 function addLoading() {
+  if (!chatMessages) return null;
   const loadingDiv = document.createElement('div');
   loadingDiv.className = 'message assistant';
   loadingDiv.innerHTML = `
@@ -366,6 +397,7 @@ function addLoading() {
 }
 
 function showSources(sources) {
+  if (!sourcesList || !sourcesPanel) return;
   sourcesList.innerHTML = sources.map(source => `
     <div class="source-item">
       <strong>${source.file}</strong>

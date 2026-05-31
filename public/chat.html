@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7530303544204477"
+     crossorigin="anonymous"></script>
+  <title>Workspace Dashboard | TaxPlug</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: #f1f5f9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .workspace-container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    .user-badge {
+      font-size: 0.9rem;
+      color: #475569;
+      background: #e2e8f0;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <header style="background: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <h1 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;">TaxPlug <span style="font-weight: 400; color: #64748b;">AI Console</span></h1>
+      <span id="user-email" class="user-badge">loading...</span>
+    </div>
+    
+
+  </header>
+
+     <div id="main-menu" class="tabs mini-tabs" role="navigation" aria-label="App menu">
+      <button type="button" class="tab active" >Chat</button>
+      <button type="button" class="tab" id="open-overtime-btn">Overtime Calculator</button>
+      <button type="button" class="tab" id="irp5-btn">IRP5 Codes</button>
+      <button type="button" class="tab" id="open-contact-btn">Contact Us</button>
+      <button type="button" class="tab" id="open-needs-btn">Needs Analysis</button>
+    </div>
+
+  <main class="workspace-container">
+    <div id="chat-section" class="chat-card" style="display: flex; flex-direction: column; flex-grow: 1; min-height: 500px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); overflow: hidden;">
+      
+      <div id="chat-messages" class="chat-messages" style="flex-grow: 1; padding: 1.5rem; overflow-y: auto; max-height: calc(100vh - 240px);">
+        <div class="message assistant">
+          <div class="message-content">
+            <p>Welcome back! I am your AI tax collaborator. How can I help you optimize or sort out your compliance returns today?</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="sources-panel" class="sources-panel hidden">
+        <div class="sources-header">
+          <h3>Grounding Reference Sources</h3>
+          <button id="close-sources" class="close-btn">&times;</button>
+        </div>
+        <div id="sources-list" class="sources-list"></div>
+      </div>
+
+      <div style="background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 1rem;">
+        <form id="question-form" style="display: flex; gap: 0.75rem;">
+          <input type="text" id="question-input" placeholder="Ask a tax compliance equation rule, deduction guideline, etc..." required autocomplete="off" style="flex-grow: 1; padding: 0.75rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem;">
+          <button type="submit" class="btn primary" style="padding: 0.75rem 1.5rem; border-radius: 8px;">Ask AI</button>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

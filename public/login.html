@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Portal | TaxPlug</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    .landing-auth-wrapper {
+      width: 100%;
+      max-width: 480px;
+    }
+    .forgot-link {
+      display: block;
+      margin: 0.75rem 0;
+      font-size: 0.9rem;
+      color: #2563eb;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .forgot-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div id="app">
+    <div id="auth-section" class="landing-auth-wrapper">
+      <div class="auth-card">
+        <h2 style="font-size:1.5rem; font-weight:800; text-align:center; color:#0f172a; margin-bottom:0.25rem;">Secure Access Portal</h2>
+        <p class="subtitle" style="text-align:center; margin-bottom:1.5rem;">We're here to help with your Tax Matters</p>
+        
+        <div id="auth-tabs" class="tabs">
+          <button class="tab active" data-tab="login">Login</button>
+          <button class="tab" data-tab="register">Register</button>
+        </div>
+        
+        <form id="login-form" class="auth-form">
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <span id="to-forgot-view" class="forgot-link">Forgot Password?</span>
+          <button type="submit" class="btn primary">Login</button>
+        </form>
+        
+        <form id="register-form" class="auth-form hidden">
+          <input type="text" name="name" placeholder="Name">
+          <input type="tel" name="cellno" placeholder="Cell Number" required >
+          <input type="text" name="addressLine1" placeholder="Address Line 1">
+          <input type="text" name="addressLine2" placeholder="Address Line 2">
+          <input type="text" name="province" placeholder="Province">
+          <select name="country" aria-label="Country">
+            <option value="South Africa" selected>South Africa</option>
+            <option value="Namibia">Namibia</option>
+            <option value="Botswana">Botswana</option>
+            <option value="Lesotho">Lesotho</option>
+            <option value="Eswatini">Eswatini</option>
+            <option value="Zimbabwe">Zimbabwe</option>
+            <option value="Mozambique">Mozambique</option>
+            <option value="Zambia">Zambia</option>
+            <option value="Other">Other</option>
+          </select>
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <p style="font-size:0.85rem; color:#64748b; margin: 0.5rem 0;">Please know we will always seek your consent before sharing your information.</p>
+          <button type="submit" class="btn primary">Register</button>
+        </form>
+
+        <div id="forgot-password-section" class="auth-form hidden">
+          <form id="forgot-email-form">
+            <p style="font-size: 0.9rem; margin-bottom: 0.75rem;">Enter your email address to receive a validation recovery token code.</p>
+            <input type="email" id="forgot-email" placeholder="Enter your registered email" required>
+            <button type="submit" class="btn primary">Send Verification Code</button>
+          </form>
+
+          <form id="forgot-reset-form" class="hidden" style="margin-top: 1rem;">
+            <p style="font-size: 0.9rem; margin-bottom: 0.75rem; color: green;">✓ Check your email for the confirmation code.</p>
+            <input type="text" id="forgot-code" placeholder="Enter Reset Code" required autocomplete="off">
+            <input type="password" id="forgot-new-password" placeholder="Enter New Password" required>
+            <button type="submit" class="btn primary">Update Password</button>
+          </form>
+
+          <span id="back-to-login" class="forgot-link" style="text-align: center; margin-top: 1rem;">Back to Login</span>
+        </div>
+        
+        <p id="auth-error" class="error"></p>
+        <div class="auth-actions" style="margin-top:1rem; text-align:center;">
+          <a href="index.html" class="btn secondary">Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,55 +1,51 @@
-import { Router } from 'express';
-import { authenticateToken } from '../middleware/auth.js';
+// server/routes/admin.js
+import express from 'express';
 import { requireAdmin } from '../middleware/admin.js';
-import db, { getConfig, setConfig, promoteUserToAdmin, getAdminEmails, getOnlineVisitorCount, getTodaysVisitCount } from '../models/User.js';
+import { authenticateToken } from '../middleware/auth.js';
 
-const router = Router();
+import db, { getOnlineVisitorCount } from '../models/User.js';
 
-router.get('/users', authenticateToken, requireAdmin, (req, res) => {
-  const users = db.prepare(
-    'SELECT id, name, email, is_admin, created_at FROM users'
-  ).all();
+const router = express.Router();
 
-  res.json(users);
+// Apply your middleware
+router.use(authenticateToken, requireAdmin);
+
+// 1. GET ALL USERS ROUTE
+router.get('/users', async (req, res) => {
+  try {
+    // 💡 SWAPPED: db.prepare().all() -> await db.execute()
+    const result = await db.execute("SELECT id, name, email, is_admin, created_at FROM users ORDER BY created_at DESC");
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Admin user fetch error:", error);
+    res.status(500).json({ error: "Failed to fetch user database records" });
+  }
 });
 
-router.get('/stats', authenticateToken, requireAdmin, (req, res) => {
-  const onlineVisitors = getOnlineVisitorCount(5);
-  const visitsToday = getTodaysVisitCount();
-  const overtimeThreshold = parseFloat(getConfig('overtime_threshold', '21900')) || 21900;
-  const adminEmails = getAdminEmails();
+// 2. GET STATS ROUTE
+router.get('/stats', async (req, res) => {
+  try {
+    const totalUsersResult = await db.execute("SELECT COUNT(*) as count FROM users");
+    const onlineCount = await getOnlineVisitorCount(); // Calls our fixed model function below
+    
+    // Get your threshold configuration value from your settings/config table if you have one
+    const thresholdResult = await db.execute("SELECT value FROM config WHERE key = 'overtime_threshold' LIMIT 1").catch(() => null);
+    const overtimeThreshold = thresholdResult?.rows[0]?.value || 21900;
 
-  res.json({ onlineVisitors, visitsToday, overtimeThreshold, adminEmails });
-});
+    // Get admin email list
+    const adminsResult = await db.execute("SELECT email FROM users WHERE is_admin = 1");
+    const adminEmails = adminsResult.rows.map(row => row.email);
 
-router.put('/config', authenticateToken, requireAdmin, (req, res) => {
-  const { overtimeThreshold } = req.body;
-
-  if (overtimeThreshold === undefined || overtimeThreshold === null) {
-    return res.status(400).json({ error: 'overtimeThreshold is required' });
+    res.json({
+      onlineVisitors: onlineCount,
+      visitsToday: totalUsersResult.rows[0].count, // Fallback placeholder to total users for now
+      overtimeThreshold: overtimeThreshold,
+      adminEmails: adminEmails
+    });
+  } catch (error) {
+    console.error("Admin stats fetch error:", error);
+    res.status(500).json({ error: "Failed to aggregate admin dashboard telemetry data" });
   }
-
-  const numericThreshold = Number(overtimeThreshold);
-  if (Number.isNaN(numericThreshold) || numericThreshold < 0) {
-    return res.status(400).json({ error: 'overtimeThreshold must be a valid positive number' });
-  }
-
-  setConfig('overtime_threshold', numericThreshold);
-  res.json({ success: true, overtimeThreshold: numericThreshold });
-});
-
-router.post('/admins', authenticateToken, requireAdmin, (req, res) => {
-  const { email } = req.body;
-  if (!email) {
-    return res.status(400).json({ error: 'Email is required' });
-  }
-
-  const user = promoteUserToAdmin(email);
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  res.json({ success: true, user });
 });
 
 export default router;
