@@ -77,15 +77,36 @@
       border: 1px solid #b7ebc6;
       color: #0f5132;
     }
+.nav-bar {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #005c38;
+    }
+
+    .nav-logo span {
+      color: #005c38;
+    }
+
   </style>
 </head>
 <body>
   <div id="app">
-    <header class="header">
-      <h1>Contact Us</h1>
+   <header class="header">
+      
+      <a class="nav-logo" href="index.html">Tax<span>Plug</span></a>
       <div class="header-actions">
         <span id="user-email"></span>
         <button id="logout-btn" class="btn secondary">Logout</button>
+     
       </div>
     </header>
 

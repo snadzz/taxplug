@@ -32,6 +32,8 @@ const userEmailSpan = document.getElementById('user-email');
 const logoutBtn = document.getElementById('logout-btn');
 const backChatBtn = document.getElementById('back-chat-btn');
 const backOvertimeBtn = document.getElementById('back-overtime-btn');
+const openNeedsBtn = document.getElementById('open-needs-btn');
+const openContactBtn = document.getElementById('open-contact-btn');
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -207,6 +209,14 @@ function setupEventListeners() {
 
   backChatBtn?.addEventListener('click', () => {
     window.location.href = 'index.html';
+  });
+
+  openNeedsBtn?.addEventListener('click', () => {
+    window.location.href = 'needs-analysis.html';
+  });
+
+  openContactBtn?.addEventListener('click', () => {
+    window.location.href = 'contact.html';
   });
 
   backOvertimeBtn?.addEventListener('click', () => {
